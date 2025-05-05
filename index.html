@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Secure Facial Login</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #0d0d0d;
+      font-family: 'Orbitron', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      color: white;
+    }
+    .login-box {
+      background: rgba(255, 0, 0, 0.05);
+      border: 1px solid red;
+      border-radius: 15px;
+      padding: 30px;
+      width: 350px;
+      box-shadow: 0 0 15px red;
+    }
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 5px;
+      background: #222;
+      color: white;
+    }
+    button {
+      width: 100%;
+      padding: 10px;
+      background: red;
+      border: none;
+      border-radius: 5px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    video {
+      width: 320px;
+      border: 1px solid red;
+      margin-top: 20px;
+    }
+    #access-code-section {
+      display: none;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-box">
+    <h2>Login to Access</h2>
+    <input type="text" id="username" placeholder="Username" />
+    <input type="password" id="password" placeholder="Password" />
+    <button onclick="attemptLogin()">Login</button>
+    <p id="login-msg"></p>
+  </div>
+
+  <video id="video" autoplay muted></video>
+  <div id="access-code-section">
+    <p>Face not recognized. Enter one-time access code:</p>
+    <input type="text" id="access-code" placeholder="Enter access code">
+    <button onclick="validateAccessCode()">Submit Code</button>
+    <p id="code-msg"></p>
+  </div>
+
+  <script>
+    const validUsers = {
+      "klcl": "kennethloveskfc",
+      "chuahjiacheng": "A4071090a",
+      "CTZ": "P&579A730",
+      "CSZ": "csz5544@exam",
+      "isuckkhok69": "khok123456"
+    };
+
+    const oneTimeCodes = new Set(["X93AB2", "J28LWP", "Z7CRND", "Q93VKL", "M29SDE", "B82NRZ"]);
+
+    async function startCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+        document.getElementById("video").srcObject = stream;
+        // Simulate facial recognition result
+        setTimeout(() => {
+          const recognized = false; // Set to false to simulate failure
+          if (!recognized) {
+            document.getElementById("access-code-section").style.display = "block";
+          }
+        }, 3000);
+      } catch (err) {
+        console.error("Camera error", err);
+      }
+    }
+
+    function attemptLogin() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value;
+      if (validUsers[username] === password) {
+        document.getElementById("login-msg").textContent = "Login success!";
+        setTimeout(() => {
+          window.location.href = "https://sparekrandos.wixsite.com/chung-ling-private-h/home";
+        }, 1000);
+      } else {
+        document.getElementById("login-msg").textContent = "Invalid username or password.";
+      }
+    }
+
+    function validateAccessCode() {
+      const code = document.getElementById("access-code").value.trim();
+      const msg = document.getElementById("code-msg");
+      if (oneTimeCodes.has(code)) {
+        oneTimeCodes.delete(code);
+        msg.textContent = "Code accepted. You may now login.";
+        document.querySelector(".login-box").style.display = "block";
+      } else {
+        msg.textContent = "Invalid or used code.";
+      }
+    }
+
+    startCamera();
+  </script>
+</body>
+</html>
